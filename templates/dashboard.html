@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block head%}
+{{ js_resources|indent(4)|safe }}
+{{ css_resources|indent(4)|safe }}
+{{ plot_script|indent(4)|safe }}
+
+{% endblock%}
+
+
+{% block body %}
+<div class="nav-wrap">
+  <nav class="navbar navbar-expand-xxl navbar-dark bg-dark navbar-fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand logo-font" href="#">
+        Dashboard
+      </a>
+      <!-- links toggle -->
+      <button class="navbar-toggler btn-dark order-first" type="button" data-toggle="collapse" data-target="#links"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fa fa-bars"></i>
+      </button>
+      <!-- account toggle -->
+      <div>
+        <button type="button" class="btn btn-dark" disabled>
+          <i class="pr-2 fa fa-user"></i> {{user}}
+        </button>
+        <button class="btn btn-dark" type="button" onclick='location.href="/logout"'>
+          <i class="fa fa-sign-out"></i>
+        </button>
+      </div>
+
+      <div class="collapse navbar-collapse" id="links">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/dashboard">Kondisi Jalan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/rekapitulasi">Rekapitulasi Panjang</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/biaya">Rencana Biaya Penanganan</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6">
+      <table class="table table-hover table-bordered my-table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" rowspan="2" style="vertical-align: middle; text-align: center;">No</th>
+            <th scope="col" rowspan="2" style="vertical-align: middle; text-align: center;">Ruas</th>
+            <th scope="col" rowspan="2" style="vertical-align: middle; text-align: center;">Panjang (Km)</th>
+            <th scope="col" colspan="3" style="vertical-align: middle; text-align: center;">Kondisi Rata-Rata</th>
+            <th scope="col" colspan="5" style="vertical-align: middle; text-align: center;">Panjang per Kondisi IRI (km)
+            </th>
+            <th scope="col" colspan="5" style="vertical-align: middle; text-align: center;">Panjang per Kondisi SDI (km)
+            </th>
+            <th scope="col" colspan="5" style="vertical-align: middle; text-align: center;">Panjang per Kelas Lebar (km)
+            </th>
+            <th scope="col" colspan="2" style="vertical-align: middle; text-align: center;">Biaya (Rp)</th>
+          </tr>
+          <tr>
+            <!-- kondisi rata-rata -->
+            <th scope="col" style="vertical-align: middle; text-align: center;">IRI (m/km)</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">SDI (m/km)</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Lebar (m)</th>
+            <!-- IRI -->
+            <th scope="col" style="vertical-align: middle; text-align: center;">Baik</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Sedang</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Rusak Ringan</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Rusak Berat</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Total</th>
+            <!-- SDI -->
+            <th scope="col" style="vertical-align: middle; text-align: center;">Baik</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Sedang</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Rusak Ringan</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Rusak Berat</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Total</th>
+            <!-- Lebar -->
+            <th scope="col" style="vertical-align: middle; text-align: center;">
+              <= 6 m</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">6 - 7 m</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">7 - 14 m</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">> 14 m</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">Total</th>
+            <!-- Biaya -->
+            <th scope="col" style="vertical-align: middle; text-align: center;">IRI</th>
+            <th scope="col" style="vertical-align: middle; text-align: center;">SDI</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in row_data %}
+          <tr>
+            {% set col_count = namespace(value=0) %}
+            {% for data in row %}
+            {% if col_count.value == 0 or col_count.value == 1 %}
+            <td>{{data}}</td>
+            {% elif col_count.value >= 2 and col_count.value <= 20 %} <td>{{round(data, 2)}}</td>
+              {% elif col_count.value == 21 or col_count.value == 22 %}
+              <td>{{format_uang(round(data, 2))}}</td>
+              {% endif%}
+
+              {% set col_count.value = col_count.value + 1 %}
+              {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6">
+        {{ plot_div|indent(0)|safe }}
+    </div>
+  </div>
+</div>
+
+
+<style>
+  table {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    height: calc(100vh - 100px);
+    display: inline-block;
+  }
+  
+  .navbar-fixed-top {
+    position: relative;
+  }
+
+  .nav-wrap {
+    padding-bottom: 1rem;
+  }
+
+  .my-table {
+    font-size: 12px;
+  }
+
+  div.bk-tooltip.bk-right>div.bk>div:not(:first-child) {
+    display: none !important;
+  }
+
+  div.bk-tooltip.bk-left>div.bk>div:not(:first-child) {
+    display: none !important;
+  }
+</style>
+
+<script>
+  $(document).ready(function () {
+    var pagebutton = $(".bk-btn-success");
+    pagebutton.click();
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+<div class="nav-wrap">
+<nav class="navbar navbar-expand-xxl navbar-dark bg-dark navbar-fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand logo-font" href="#">
+            Dashboard
+        </a>
+        <!-- links toggle -->
+        <button class="navbar-toggler btn-dark order-first" type="button" data-toggle="collapse" data-target="#links"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fa fa-bars"></i>
+        </button>
+        <!-- account toggle -->
+        <div>
+            <button type="button" class="btn btn-dark" disabled>
+                <i class="pr-2 fa fa-user"></i> {{user}}
+            </button>
+            <button class="btn btn-dark" type="button" onclick='location.href="/logout"'>
+                <i class="fa fa-sign-out"></i>
+            </button>
+        </div>
+
+
+        <div class="collapse navbar-collapse" id="links">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Kondisi Jalan</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/rekapitulasi">Rekapitulasi Panjang</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/biaya">Rencana Biaya Penanganan</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+</div>
+<div class="container" style="position: sticky;"">
+    <div class=" row">
+    <div class="col-md-12">
+        <h1>Rekapitulasi Panjang Kondisi Jalan</h1>
+        <h2>Per Kondisi</h2>
+    </div>
+    <div class="col-md">
+        <table class="table table-hover table-bordered my-table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" rowspan="2" style="vertical-align: middle; text-align: center;">Kondisi</th>
+                    <th scope="col" colspan="2" style="vertical-align: middle; text-align: center;">Panjang dalam KM
+                    </th>
+                </tr>
+                <tr>
+                    <th scope="col" style="vertical-align: middle; text-align: center;">Berdasarkan IRI</th>
+                    <th scope="col" style="vertical-align: middle; text-align: center;">Berdasarkan SDI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Baik
+                    </td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.IRI[0],2)}}</td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.SDI[0],2)}}</td>
+                </tr>
+                <tr>
+                    <td>
+                        Sedang
+                    </td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.IRI[1],2)}}</td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.SDI[1],2)}}</td>
+                </tr>
+                <tr>
+                    <td>
+                        Rusak Ringan
+                    </td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.IRI[2],2)}}</td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.SDI[2],2)}}</td>
+                </tr>
+                <tr>
+                    <td>
+                        Rusak Berat
+                    </td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.IRI[3],2)}}</td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.SDI[3],2)}}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Panjang SK</b>
+                    </td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.IRI[4],2)}}</td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.SDI[4],2)}}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <td><b>%Mantap</b></td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.IRI[5]*100, 2)}}</td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.SDI[5]*100, 2)}}</td>
+                </tr>
+                <tr>
+                    <td><b>%Tidak Mantap</b></td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.IRI[6]*100, 2)}}</td>
+                    <td style="vertical-align: middle; text-align: center;">{{round(generate.SDI[6]*100, 2)}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card text-white bg-success mb-3" style="margin-left: 18px;">
+            <div class="card-body" style="font-size: 14px; padding-bottom: 0;">
+                <p><b>% Mantap</b> : (kondisi baik+kondisi sedang)/Panjang SK</p>
+                <p><b>% Tidak Mantap</b> : (kondisi rusak ringan+kondisi rusak berat)/panjang SK</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<style>
+    .my-table {
+        font-size: 14px;
+    }
+
+    .navbar-fixed-top {
+        position: relative;
+    }
+    .nav-wrap {
+        padding-bottom: 1rem;
+    }
+</style>
+
+
+{% endblock %}

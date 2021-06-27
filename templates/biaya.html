@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="nav-wrap">
+    <nav class="navbar navbar-expand-xxl navbar-dark bg-dark navbar-fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand logo-font" href="#">
+                Dashboard
+            </a>
+            <!-- links toggle -->
+            <button class="navbar-toggler btn-dark order-first" type="button" data-toggle="collapse"
+                data-target="#links" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fa fa-bars"></i>
+            </button>
+            <!-- account toggle -->
+            <div>
+                <button type="button" class="btn btn-dark" disabled>
+                    <i class="pr-2 fa fa-user"></i> {{user}}
+                </button>
+                <button class="btn btn-dark" type="button" onclick='location.href="/logout"'>
+                    <i class="fa fa-sign-out"></i>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="links">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Kondisi Jalan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/rekapitulasi">Rekapitulasi Panjang</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/biaya">Rencana Biaya Penanganan</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Kebutuhan Dana Penanganan Jalan</h1>
+            <h2>per Kondisi</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-bordered my-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nilai</th>
+                        <th>Kondisi</th>
+                        <th>Program</th>
+                        <th>Penanganan</th>
+                        <th>Biaya per KM</th>
+                        <th>Total Biaya</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6"><b>Kondisi Berdasarkan IRI (m/KM)</b></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            < 4</td>
+                        <td>Baik</td>
+                        <td>Rutin</td>
+                        <td>Pemeliharaan Rutin</td>
+                        <td><input type="text" id="iri-baik" class="iri" value="50,000,000.00"></td>
+                        <td id="iri-baik-total">{{format_uang(round(generate.IRI[0]*50000000,2))}}</td>
+                    </tr>
+                    <tr>
+                        <td>4 - 8</td>
+                        <td>Sedang</td>
+                        <td>Rutin</td>
+                        <td>Pemeliharaan Rutin</td>
+                        <td><input type="text" id="iri-sedang" class="iri" value="50,000,000.00"></td>
+                        <td id="iri-sedang-total">{{format_uang(round(generate.IRI[1]*50000000,2))}}</td>
+                    </tr>
+                    <tr>
+                        <td>8 - 12</td>
+                        <td>Rusak Ringan</td>
+                        <td>Berkala (2 Lapis)</td>
+                        <td>ACWC - ACBC</td>
+                        <td><input type="text" id="iri-rusak-ringan" class="iri" value="4,096,000,000.00"></td>
+                        <td id="iri-rusak-ringan-total">{{format_uang(round(generate.IRI[2]*4096000000, 2))}}</td>
+                    </tr>
+                    <tr>
+                        <td>> 12</td>
+                        <td>Rusak Berat</td>
+                        <td>Peningkatan (3 Lapis)</td>
+                        <td>ACWC - ACBC - AC Base</td>
+                        <td><input type="text" id="iri-rusak-berat" class="iri" value="8,640,000,000.00"></td>
+                        <td id="iri-rusak-berat-total">{{format_uang(round(generate.IRI[3]*8640000000, 2))}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="vertical-align: middle; text-align: right;"><b>Total Biaya Berdasarkan
+                                IRI</b></td>
+                        <td id="iri-total-sum">{{format_uang(round(generate.IRI[0]*50000000 + generate.IRI[1]*50000000 +
+                            generate.IRI[2]*4096000000 + generate.IRI[3]*8640000000 , 2))}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="bg-secondary"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"><b>Kondisi Berdasarkan SDI (m/KM)</b></td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            < 50</td>
+                        <td>Baik</td>
+                        <td>Rutin</td>
+                        <td>Pemeliharaan Rutin</td>
+                        <td><input type="text" id="sdi-baik" class="sdi" value="50,000,000.00"></td>
+                        <td id="sdi-baik-total">{{format_uang(round(generate.SDI[0]*50000000, 2))}}</td>
+                    </tr>
+                    <tr>
+                        <td>51 - 100</td>
+                        <td>Sedang</td>
+                        <td>Rutin</td>
+                        <td>Pemeliharaan Rutin</td>
+                        <td><input type="text" id="sdi-sedang" class="sdi" value="50,000,000.00"></td>
+                        <td id="sdi-sedang-total">{{format_uang(round(generate.SDI[1]*50000000, 2))}}</td>
+                    </tr>
+                    <tr>
+                        <td>101 - 150</td>
+                        <td>Rusak Ringan</td>
+                        <td>Berkala (2 Lapis)</td>
+                        <td>ACWC - ACBC</td>
+                        <td><input type="text" id="sdi-rusak-ringan" class="sdi" value="4,096,000,000.00"></td>
+                        <td id="sdi-rusak-ringan-total">{{format_uang(round(generate.SDI[2]*4096000000, 2))}}</td>
+                    </tr>
+                    <tr>
+                        <td>> 150</td>
+                        <td>Rusak Berat</td>
+                        <td>Peningkatan (3 Lapis)</td>
+                        <td>ACWC - ACBC - AC Base</td>
+                        <td><input type="text" id="sdi-rusak-berat" class="sdi" value="8,640,000,000.00"></td>
+                        <td id="sdi-rusak-berat-total">{{format_uang(round(generate.SDI[3]*8640000000, 2))}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="vertical-align: middle; text-align: right;"><b>Total Biaya Berdasarkan
+                                SDI</b></td>
+                        <td id="sdi-total-sum">{{format_uang(round(generate.SDI[0]*50000000 + generate.SDI[1]*50000000 +
+                            generate.SDI[2]*4096000000 + generate.SDI[3]*8640000000 , 2))}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card text-white bg-success mb-3" style="margin-left: 18px;">
+                <div class="card-body" style="font-size: 14px; padding-bottom: 0;">
+                    <p><b>Ket : </b> Kebutuhan Dana Penanganan Jalan ini hanya untuk program networking.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .navbar-fixed-top {
+        position: relative;
+    }
+
+    .nav-wrap {
+        padding-bottom: 1rem;
+    }
+    .my-table {
+        font-size: 14px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        var idr = value => currency(value, { symbol: "", separator: ",", decimal: "." });
+
+        $(".iri").on('input', function () {
+            var iri_baik = idr($("#iri-baik").val()).multiply({{ generate.IRI[0] }})
+        var iri_sedang = idr($("#iri-sedang").val()).multiply({{ generate.IRI[1] }})
+    var iri_rusak_ringan = idr($("#iri-rusak-ringan").val()).multiply({{ generate.IRI[2] }})
+    var iri_rusak_berat = idr($("#iri-rusak-berat").val()).multiply({{ generate.IRI[3] }})
+
+    $("#iri-baik-total").text(iri_baik.format());
+    $("#iri-sedang-total").text(iri_sedang.format());
+    $("#iri-rusak-ringan-total").text(iri_rusak_ringan.format());
+    $("#iri-rusak-berat-total").text(iri_rusak_berat.format());
+    $("#iri-total-sum").text(idr(iri_baik.value + iri_sedang.value + iri_rusak_ringan.value + iri_rusak_berat.value).format());
+    });
+
+    $(".sdi").on('input', function () {
+        var sdi_baik = idr($("#sdi-baik").val()).multiply({{ generate.SDI[0] }})
+    var sdi_sedang = idr($("#sdi-sedang").val()).multiply({{ generate.SDI[1] }})
+    var sdi_rusak_ringan = idr($("#sdi-rusak-ringan").val()).multiply({{ generate.SDI[2] }})
+    var sdi_rusak_berat = idr($("#sdi-rusak-berat").val()).multiply({{ generate.SDI[3] }})
+
+    $("#sdi-baik-total").text(sdi_baik.format());
+    $("#sdi-sedang-total").text(sdi_sedang.format());
+    $("#sdi-rusak-ringan-total").text(sdi_rusak_ringan.format());
+    $("#sdi-rusak-berat-total").text(sdi_rusak_berat.format());
+    $("#sdi-total-sum").text(idr(sdi_baik.value + sdi_sedang.value + sdi_rusak_ringan.value + sdi_rusak_berat.value).format());
+    });
+    
+});
+</script>
+{% endblock%}
