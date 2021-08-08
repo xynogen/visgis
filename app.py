@@ -61,7 +61,8 @@ def dashboard(tiles=OSM):
             Statistik = st(FILE)
             Statistik.generate()
 
-        if tiles == "OSM":
+
+        if tiles == "OSM" or tiles==None:
             tile = OSM
         elif tiles == "ESRI_IMAGERY":
             tile = ESRI_IMAGERY
@@ -259,6 +260,6 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.add_url_rule('/dashboard','dashboard',dashboard)
-    # serve(app, host="0.0.0.0", port=5000)
-    app.run(debug=True)
+    app.add_url_rule('/dashboard/','dashboard',dashboard)
+    serve(app, host="0.0.0.0", port=5000)
+    # app.run(debug=True)
