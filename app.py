@@ -2,7 +2,7 @@ import geopandas as gpd
 import pandas as pd
 import numpy as np
 import os
-from waitress import serve
+# from waitress import serve
 from flask import Flask, redirect, url_for, request, session, render_template
 from bokeh.layouts import layout
 from bokeh.models import OpenURL, TapTool, HoverTool, Toggle, WheelZoomTool, CustomJS, Dropdown
@@ -261,5 +261,5 @@ def logout():
 
 if __name__ == "__main__":
     app.add_url_rule('/dashboard/','dashboard',dashboard)
-    serve(app, host="0.0.0.0", port=5000)
-    # app.run(debug=True)
+    # serve(app, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0")
